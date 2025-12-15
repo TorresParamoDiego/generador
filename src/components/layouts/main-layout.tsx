@@ -26,7 +26,7 @@ export const MainLayout = ({children}:Props) => {
 
       <header className='flex justify-center mb-10'>
         <img 
-          src="/public/assets/images/logo-full.svg" 
+          src="/assets/images/logo-full.svg" 
           alt="logo"
           className=''
         />

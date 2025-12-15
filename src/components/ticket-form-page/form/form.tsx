@@ -2,6 +2,9 @@ import { UploadInput } from './upload-input'
 import { TextInput } from './text-input'
 import { Button } from './button'
 import { useForm, type SubmitHandler } from 'react-hook-form'
+import { useShowTicket } from '../../../hooks/use-show-ticket'
+import { useUserStore } from '../../../store/user'
+import { useState, type ChangeEvent } from 'react'
 
 type Inputs = {
   fullName: string;
@@ -11,19 +14,49 @@ type Inputs = {
 
 export const Form = () => {
 
+  const [imageUrl, setImageUrl] = useState<string>('')
+
   const {
     register,
     formState: {errors},
     handleSubmit
   } = useForm<Inputs>()
 
+  const context = useShowTicket();
+  const userStore = useUserStore();
+
   const sendForm: SubmitHandler<Inputs>  = (data) => {
-    console.log(data)
+    
+    const {email, fullName, githubUser} = data;
+    
+    context.setShowTicket(true);
+
+    userStore.setUser({
+      email,
+      fullName,
+      githubUser,
+      url: imageUrl
+    })
+  }
+
+  const handleChange = (e:ChangeEvent<HTMLInputElement>) => {
+
+    const file = e.target.files?.[0]
+    if(file){
+      const url = URL.createObjectURL(file)
+      console.log(file)
+      console.log(url)
+      setImageUrl(url)
+    }
+
   }
 
   return (
     <form className='' onSubmit={handleSubmit(sendForm)}>
-      <UploadInput />
+      <UploadInput
+        url={imageUrl}
+        onChange={handleChange}
+      />
       <div className='flex flex-col gap-6'>
         <TextInput
           {...register("fullName", { required: "Full Name is required" })}
