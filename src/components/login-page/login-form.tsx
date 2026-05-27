@@ -35,7 +35,7 @@ export const LoginForm = () => {
         setServerError(json.error || 'Error al iniciar sesión');
         return;
       }
-      setAuthenticated(true);
+      setAuthenticated(true, json.usuario.id);
     } catch {
       setServerError('No se pudo conectar con el servidor');
     } finally {

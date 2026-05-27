@@ -1,3 +1,6 @@
+
+//conexion principal con sequelize a postgres, 
+//se exporta para usar en otros archivos
 import { Sequelize } from 'sequelize';
 import dotenv from 'dotenv';
 dotenv.config();

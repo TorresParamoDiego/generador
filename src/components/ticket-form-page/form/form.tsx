@@ -5,6 +5,7 @@ import { useForm, type SubmitHandler } from 'react-hook-form'
 import { useShowTicket } from '../../../hooks/use-show-ticket'
 import { useUserStore } from '../../../store/user'
 import { useState, type ChangeEvent } from 'react'
+import { useAuthStore } from '../../../store/auth'
 
 type Inputs = {
   fullName: string;
@@ -13,50 +14,52 @@ type Inputs = {
 }
 
 export const Form = () => {
-
+  const userId = useAuthStore((s) => s.userId);
   const [imageUrl, setImageUrl] = useState<string>('')
 
   const {
     register,
-    formState: {errors},
+    formState: { errors },
     handleSubmit
   } = useForm<Inputs>()
 
   const context = useShowTicket();
   const userStore = useUserStore();
 
-  const sendForm: SubmitHandler<Inputs>  = (data) => {
-    
-    const {email, fullName, githubUser} = data;
-    
-    context.setShowTicket(true);
+  const sendForm: SubmitHandler<Inputs> = async (data) => {
+    const { email, fullName, githubUser } = data;
 
-    userStore.setUser({
-      email,
-      fullName,
-      githubUser,
-      url: imageUrl
-    })
-  }
-
-  const handleChange = (e:ChangeEvent<HTMLInputElement>) => {
-
-    const file = e.target.files?.[0]
-    if(file){
-      const url = URL.createObjectURL(file)
-      console.log(file)
-      console.log(url)
-      setImageUrl(url)
+    try {
+      const res = await fetch('http://localhost:3000/api/tickets', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ user_id: userId }),
+      });
+      if (!res.ok) {
+        const json = await res.json();
+        console.error('Error al crear ticket:', json.error);
+        return;
+      }
+    } catch {
+      console.error('No se pudo conectar con el servidor');
+      return;
     }
 
+    context.setShowTicket(true);
+    userStore.setUser({ email, fullName, githubUser, url: imageUrl });
+  }
+
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      const url = URL.createObjectURL(file)
+      setImageUrl(url)
+    }
   }
 
   return (
     <form className='' onSubmit={handleSubmit(sendForm)}>
-      <UploadInput
-        url={imageUrl}
-        onChange={handleChange}
-      />
+      <UploadInput url={imageUrl} onChange={handleChange} />
       <div className='flex flex-col gap-6'>
         <TextInput
           {...register("fullName", { required: "Full Name is required" })}
@@ -66,8 +69,8 @@ export const Form = () => {
           errorMessage={errors.fullName?.message}
         />
         <TextInput
-          {...register("email", { 
-            required: "Email is required", 
+          {...register("email", {
+            required: "Email is required",
             pattern: /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/g
           })}
           label='Email Address'
