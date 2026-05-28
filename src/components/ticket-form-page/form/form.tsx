@@ -6,6 +6,7 @@ import { useShowTicket } from '../../../hooks/use-show-ticket'
 import { useUserStore } from '../../../store/user'
 import { useState, type ChangeEvent } from 'react'
 import { useAuthStore } from '../../../store/auth'
+import { API_ENDPOINTS } from '../../../config'
 
 type Inputs = {
   fullName: string;
@@ -29,7 +30,7 @@ export const Form = () => {
   const sendForm: SubmitHandler<Inputs> = async (data) => {
     const { email, fullName, githubUser } = data;
 
-    try {
+    try {API_ENDPOINTS.TICKETS
       const res = await fetch('http://localhost:3000/api/tickets', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

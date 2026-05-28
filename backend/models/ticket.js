@@ -1,6 +1,6 @@
 import { DataTypes } from 'sequelize';
 import sequelize from '../db.js';
-import Usuario from './Usuario.js';
+import Usuario from './usuario.js';
 
 const Ticket = sequelize.define('Ticket', {
   num_ticket: { type: DataTypes.INTEGER, allowNull: false, unique: true },

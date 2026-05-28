@@ -4,6 +4,7 @@ import { TextInput } from '../ticket-form-page/form/text-input';
 import { Button } from '../ticket-form-page/form/button';
 import { useAuthStore } from '../../store/auth';
 import { IconInfo } from '../../assets/icon-info';
+import { API_ENDPOINTS } from '../../config';
 
 type LoginInputs = {
   email: string;
@@ -25,7 +26,7 @@ export const LoginForm = () => {
     setServerError('');
     setLoading(true);
     try {
-      const res = await fetch('http://localhost:3000/api/login', {
+      const res = await fetch(API_ENDPOINTS.LOGIN, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
