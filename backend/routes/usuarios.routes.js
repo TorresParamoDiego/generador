@@ -50,6 +50,35 @@ router.post('/', async (req, res) => {
 
 
 // =========================
+// GET - Obtener tickets de un usuario
+// =========================
+router.get('/:id/tickets', async (req, res) => {
+  try {
+    const usuario = await Usuario.findByPk(req.params.id);
+    if (!usuario) {
+      return res.status(404).json({ error: 'Usuario no encontrado' });
+    }
+    const tickets = await Ticket.findAll({
+      where: { user_id: req.params.id },
+      order: [['date', 'DESC']],
+    });
+    res.json({
+      usuario: {
+        id: usuario.id,
+        name: usuario.name,
+        email: usuario.email,
+        github: usuario.github,
+        date: usuario.date,
+      },
+      tickets,
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
+// =========================
 // DELETE - Eliminar usuario
 // =========================
 router.delete('/:id', async (req, res) => {

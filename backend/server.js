@@ -53,6 +53,7 @@ import sequelize from './db.js';
 import Usuario from './models/usuario.js';
 import usuariosRoutes from './routes/usuarios.routes.js';
 import ticketsRoutes from './routes/tickets.routes.js';
+import adminRoutes from './routes/admin.routes.js';
 import Ticket from './models/ticket.js';
 
 dotenv.config();
@@ -67,6 +68,7 @@ app.use(morgan('dev'));
 // Rutas
 app.use('/api/usuarios', usuariosRoutes);
 app.use('/api/tickets', ticketsRoutes);
+app.use('/api/admin', adminRoutes);
 
 // Login de usuario
 app.post('/api/login', async (req, res) => {
@@ -79,7 +81,15 @@ app.post('/api/login', async (req, res) => {
     if (usuario.password !== password) {
       return res.status(401).json({ error: 'Correo o contraseña incorrectos' });
     }
-    res.json({ message: 'Login exitoso', usuario });
+    res.json({
+      message: 'Login exitoso',
+      usuario: {
+        id: usuario.id,
+        name: usuario.name,
+        email: usuario.email,
+        role: usuario.role || 'user',
+      },
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -93,10 +103,19 @@ app.post('/api/register', async (req, res) => {
     if (existente) {
       return res.status(409).json({ error: 'Ya existe una cuenta con ese correo' });
     }
-    const usuario = await Usuario.create({ name, email, github, password });
+    const usuario = await Usuario.create({ name, email, github, password, role: 'user' });
     const num_ticket = Math.floor(Math.random() * 90000) + 10000;
     const ticket = await Ticket.create({ num_ticket, user_id: usuario.id });
-    res.status(201).json({ message: 'Usuario registrado', usuario, ticket });
+    res.status(201).json({
+      message: 'Usuario registrado',
+      usuario: {
+        id: usuario.id,
+        name: usuario.name,
+        email: usuario.email,
+        role: 'user',
+      },
+      ticket,
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -107,12 +126,30 @@ const PORT = process.env.PORT || 3000;
 
 sequelize.authenticate()
   .then(() => {
-
     console.log('Conectado a PostgreSQL con Sequelize');
+    return sequelize.sync({ alter: true });
+  })
+  .then(async () => {
+    console.log('Tablas sincronizadas');
+
+    // Crear usuario administrador por defecto si no existe
+    const admin = await Usuario.findOne({ where: { email: 'admin@test.com' } });
+    if (!admin) {
+      await Usuario.create({
+        name: 'Administrador',
+        email: 'admin@test.com',
+        password: '123',
+        role: 'admin',
+      });
+      console.log('Usuario admin creado: admin@test.com / 123');
+    } else if (admin.role !== 'admin') {
+      admin.role = 'admin';
+      await admin.save();
+      console.log('Usuario admin actualizado a rol admin');
+    }
 
     app.listen(PORT, () => {
       console.log(`Servidor en http://localhost:${PORT}`);
     });
-
   })
   .catch(err => console.error(err));

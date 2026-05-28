@@ -38,7 +38,7 @@ export const RegisterForm = () => {
         setServerError(json.error || 'Error al registrarse');
         return;
       }
-      setAuthenticated(true);
+      setAuthenticated(true, json.usuario);
     } catch {
       setServerError('No se pudo conectar con el servidor');
     } finally {

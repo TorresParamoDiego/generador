@@ -7,6 +7,7 @@ const Usuario = sequelize.define('Usuario', {
   github: { type: DataTypes.STRING },
   avatar_url: { type: DataTypes.TEXT },
   password: { type: DataTypes.STRING },
+  role: { type: DataTypes.STRING, defaultValue: 'user' },
   date: { type: DataTypes.DATE, defaultValue: DataTypes.NOW },
 }, { tableName: 'users', timestamps: false });
 
