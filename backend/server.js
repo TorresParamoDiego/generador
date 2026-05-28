@@ -50,7 +50,7 @@ import cors from 'cors';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
 import sequelize from './db.js';
-import Usuario from './models/Usuario.js';
+import Usuario from './models/usuario.js';
 import usuariosRoutes from './routes/usuarios.routes.js';
 import ticketsRoutes from './routes/tickets.routes.js';
 import Ticket from './models/ticket.js';
