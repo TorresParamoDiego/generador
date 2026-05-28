@@ -30,8 +30,8 @@ export const Form = () => {
   const sendForm: SubmitHandler<Inputs> = async (data) => {
     const { email, fullName, githubUser } = data;
 
-    try {API_ENDPOINTS.TICKETS
-      const res = await fetch('http://localhost:3000/api/tickets', {
+    try {
+      const res = await fetch(API_ENDPOINTS.TICKETS, {  // ← aquí el cambio
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ user_id: userId }),
