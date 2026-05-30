@@ -33,17 +33,24 @@ export const useAuthStore = create<AuthState>()((set) => ({
       userEmail: user?.email ?? '',
       role: user?.role ?? null,
     }),
-  logout: () => {
+logout: () => {
+    // 1. ELIMINA EL TOKEN FÍSICO (Ajusta 'token' al nombre que uses)
+    localStorage.removeItem('token'); 
+    sessionStorage.removeItem('token'); // Por si lo guardaste aquí
+
     try {
       useUserStore.getState().reset();
-    } catch {
-      /* ignore */
+    } catch (error) {
+      console.error("Error reseteando useUserStore:", error);
     }
+
     try {
       useUserViewStore.getState().setView('home');
-    } catch {
-      /* ignore */
+    } catch (error) {
+      console.error("Error cambiando la vista:", error);
     }
+
+    // 3. Limpia el estado de autenticación
     set({ ...emptyAuth });
   },
 }));

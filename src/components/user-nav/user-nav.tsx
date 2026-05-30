@@ -1,3 +1,4 @@
+
 import { useAuthStore } from '../../store/auth';
 import { useUserViewStore, type UserView } from '../../store/user-view';
 import {
@@ -24,7 +25,6 @@ export const UserNav = () => {
   const userName = useAuthStore((s) => s.userName);
   const view = useUserViewStore((s) => s.view);
   const setView = useUserViewStore((s) => s.setView);
-
   const handleLogout = () => {
     useAuthStore.getState().logout();
   };
