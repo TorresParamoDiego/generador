@@ -1,5 +1,7 @@
 @import "tailwindcss";
-
+body {
+  @apply text-Neutral-0 font-Inconsolata bg-Neutral-900;
+}
 @font-face {
   font-family: Inconsolata;
   font-style: normal;
