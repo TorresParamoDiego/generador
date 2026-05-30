@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Modal } from './modal';
+import { API_URL } from '../../config';
 
 interface TicketRow {
   id: number;
@@ -31,7 +32,7 @@ export const TicketsTable = () => {
     setLoading(true);
     setError('');
     try {
-      const res = await fetch('http://localhost:3000/api/admin/tickets');
+      const res = await fetch(`${API_URL}/api/admin/tickets`);
       const json = await res.json();
       setTickets(json);
     } catch {
@@ -43,7 +44,7 @@ export const TicketsTable = () => {
 
   const fetchUsers = async () => {
     try {
-      const res = await fetch('http://localhost:3000/api/admin/usuarios');
+      const res = await fetch(`${API_URL}/api/admin/usuarios`);
       const json = await res.json();
       setUsers(json.map((u: UserOption) => ({ id: u.id, name: u.name, email: u.email })));
     } catch {
@@ -59,7 +60,7 @@ export const TicketsTable = () => {
   const handleDelete = async (id: number) => {
     if (!confirm('¿Eliminar este ticket?')) return;
     try {
-      const res = await fetch(`http://localhost:3000/api/admin/tickets/${id}`, {
+      const res = await fetch(`${API_URL}/api/admin/tickets/${id}`, {
         method: 'DELETE',
       });
       if (res.ok) {
@@ -88,7 +89,7 @@ export const TicketsTable = () => {
       return;
     }
     try {
-      const res = await fetch('http://localhost:3000/api/admin/tickets', {
+      const res = await fetch(`${API_URL}/api/admin/tickets`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ user_id: selectedUser }),
@@ -113,7 +114,7 @@ export const TicketsTable = () => {
     }
     try {
       const res = await fetch(
-        `http://localhost:3000/api/admin/tickets/${editing.id}`,
+        `${API_URL}/api/admin/tickets/${editing.id}`,
         {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },

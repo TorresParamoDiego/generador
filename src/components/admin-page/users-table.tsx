@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Modal } from './modal';
 import { UserForm, type UserFormData } from './user-form';
+import { API_URL } from '../../config';
 
 interface UserRow {
   id: number;
@@ -24,7 +25,7 @@ export const UsersTable = () => {
     setLoading(true);
     setError('');
     try {
-      const res = await fetch('http://localhost:3000/api/admin/usuarios');
+      const res = await fetch(`${API_URL}/api/admin/usuarios`);
       const json = await res.json();
       setUsers(json);
     } catch {
@@ -41,7 +42,7 @@ export const UsersTable = () => {
   const handleDelete = async (id: number) => {
     if (!confirm('¿Eliminar este usuario y todos sus tickets?')) return;
     try {
-      const res = await fetch(`http://localhost:3000/api/admin/usuarios/${id}`, {
+      const res = await fetch(`${API_URL}/api/admin/usuarios/${id}`, {
         method: 'DELETE',
       });
       if (res.ok) {
@@ -57,7 +58,7 @@ export const UsersTable = () => {
 
   const handleCreate = async (data: UserFormData): Promise<string | null> => {
     try {
-      const res = await fetch('http://localhost:3000/api/admin/usuarios', {
+      const res = await fetch(`${API_URL}/api/admin/usuarios`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
@@ -80,7 +81,7 @@ export const UsersTable = () => {
         // No enviar password vacío para no sobrescribirla
         const { password: _p, ...rest } = body;
         const res = await fetch(
-          `http://localhost:3000/api/admin/usuarios/${editing.id}`,
+          `${API_URL}/api/admin/usuarios/${editing.id}`,
           {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
@@ -91,7 +92,7 @@ export const UsersTable = () => {
         if (!res.ok) return json.error || 'Error al actualizar';
       } else {
         const res = await fetch(
-          `http://localhost:3000/api/admin/usuarios/${editing.id}`,
+          `${API_URL}/api/admin/usuarios/${editing.id}`,
           {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },

@@ -5,6 +5,7 @@ import { useUserViewStore } from '../../store/user-view';
 import { Ticket } from '../confirmation-page/ticket';
 import { CONFERENCE } from '../../data/conference';
 import { IconUser, IconMail, IconDownload, IconCalendar } from '../icons';
+import { API_URL } from '../../config';
 
 interface TicketRow {
   id: number;
@@ -37,7 +38,7 @@ export const AccountPage = () => {
       setLoading(false);
       return;
     }
-    fetch(`http://localhost:3000/api/usuarios/${userId}/tickets`)
+    fetch(`${API_URL}/api/usuarios/${userId}/tickets`)
       .then((r) => r.json())
       .then((d) => {
         setData(d);

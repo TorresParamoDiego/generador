@@ -4,6 +4,7 @@ import { StatCard } from './stat-card';
 import { TicketsTable } from './tickets-table';
 import { UsersTable } from './users-table';
 import { IconUsers, IconTicket, IconCalendar, IconSparkle } from './icons';
+import { API_URL } from '../../config';
 
 interface Stats {
   totalUsuarios: number;
@@ -25,7 +26,7 @@ export const AdminPage = () => {
 
   const fetchStats = async () => {
     try {
-      const res = await fetch('http://localhost:3000/api/admin/stats');
+      const res = await fetch(`${API_URL}/api/admin/stats`);
       const json = await res.json();
       setStats(json);
     } catch {
